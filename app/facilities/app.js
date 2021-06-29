@@ -14,7 +14,10 @@ const Company = require('./models/companies');
 mongo_user = process.env.MONGO_USER;
 mongo_pass = process.env.MONGO_PASS;
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb+srv://' + mongo_user + ':' + mongo_pass + '@cluster0.ghg6j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
+
+//mongoose.connect('mongodb+srv://user:fddw2021@cluster0.ghg6j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
+mongoose.createConnection("mongodb://mongo-fac:27017", {useNewUrlParser: true});
+
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
