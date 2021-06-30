@@ -16,7 +16,7 @@ mongo_pass = process.env.MONGO_PASS;
 mongoose.Promise = global.Promise;
 
 //mongoose.connect('mongodb+srv://user:fddw2021@cluster0.ghg6j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
-mongoose.createConnection("mongodb://mongo-fac:27017", {useNewUrlParser: true});
+mongoose.connect("mongodb://mongo-fac:27017/facilities");
 
 
 app.use(bodyParser.urlencoded({extended: true}));

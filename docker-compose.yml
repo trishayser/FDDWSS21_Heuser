@@ -10,6 +10,8 @@ services:
       - "13773:13773"
     stdin_open: true
     tty: true
+    links:
+      - mongo-fac
     depends_on:
       - mongo-fac
 
@@ -21,15 +23,14 @@ services:
     ports:
       - "13774:27017"
 
-
   mongo-express-fac:
     container_name: mongo-express-fac
     image: mongo-express
     ports:
       - "8081:8081"
     environment:
-      - ME_CONFIG_MONGODB_SERVER=mongo-fac
-      - ME_CONFIG_MONGODB_PORT=27017
+      ME_CONFIG_MONGODB_SERVER: mongo-fac
+      ME_CONFIG_MONGODB_PORT: 27017
     links:
       - mongo-fac
     depends_on:
