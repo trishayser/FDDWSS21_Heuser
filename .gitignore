@@ -10,3 +10,11 @@ poc/client/venv/
 poc/report/node_modules/
 
 poc/report/.idea/
+
+node_modules/
+
+.env
+
+.idea/
+
+data/
