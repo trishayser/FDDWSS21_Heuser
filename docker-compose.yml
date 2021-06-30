@@ -1,0 +1,40 @@
+version: '3.2'
+services:
+  facilities:
+    build: "./app/facilities"
+    command: npm start
+    volumes:
+      - ./app/facilities:/usr/app/facilities/
+      - node_modules_fac:/usr/app/facilities/node_modules
+    ports:
+      - "13773:13773"
+    stdin_open: true
+    tty: true
+    links:
+      - mongo-fac
+    depends_on:
+      - mongo-fac
+
+  mongo-fac:
+    container_name: mongo-fac
+    image: mongo:latest
+    volumes:
+      - ./data/db-mongo-fac:/data/db
+    ports:
+      - "13774:27017"
+
+  mongo-express-fac:
+    container_name: mongo-express-fac
+    image: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo-fac
+      ME_CONFIG_MONGODB_PORT: 27017
+    links:
+      - mongo-fac
+    depends_on:
+      - mongo-fac
+
+volumes:
+  node_modules_fac:
