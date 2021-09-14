@@ -1,0 +1,15 @@
+{
+  "name": "facility-monitor",
+  "version": "1.0.0",
+  "description": "",
+  "main": "facility-monitor.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node facility-monitor.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.21.4"
+  }
+}

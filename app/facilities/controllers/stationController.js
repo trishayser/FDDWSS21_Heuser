@@ -22,7 +22,7 @@ exports.create_station = function(req, res) {
 
 
 exports.read_station = function(req, res) {
-    Station.findById({_id: req.params.station_id}, function(err, station) {
+    Station.find({station_id: req.params.station_id}, function(err, station) {
         if (err)
             res.send(err);
         res.json(station);
@@ -31,7 +31,7 @@ exports.read_station = function(req, res) {
 
 
 exports.update_station = function(req, res) {
-    Station.findOneAndUpdate({_id: req.params.station_id}, req.body, {new: true}, function(err, station) {
+    Station.findOneAndUpdate({station_id: req.params.station_id}, req.body, {new: true}, function(err, station) {
         if (err)
             res.send(err);
         res.json(station);
@@ -41,7 +41,7 @@ exports.update_station = function(req, res) {
 
 exports.delete_station = function(req, res) {
     Station.remove({
-        _id: req.params.station_id
+        station_id: req.params.station_id
     }, function(err, entry) {
         if (err)
             res.send(err);

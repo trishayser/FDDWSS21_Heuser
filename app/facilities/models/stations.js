@@ -3,11 +3,27 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 var StationSchema = new Schema({
-    "station_id": Number,
+    "station_id": String,
     "name": String,
-    "company_id": Number,
-    "foreign_id": Number,
-    "timestamp": String
+    "company": String,
+    "foreign_id": String,
+    "last_updated": String,
+    "created": String,
+    "geo": {
+        "coordinates": String,
+        "typ": String,
+        "name": String
+    },
+    "stops": [{
+        "name": String,
+        "lines": String,
+        "foreign_id": String,
+        "geo": {
+            "coordinates": String,
+            "typ": String,
+            "name": String
+        }
+    }]
 
 });
 
