@@ -1,7 +1,13 @@
 version: '3.2'
+
+networks:
+  app:
+    driver: bridge
+
 services:
   facilities:
     build: "./app/facilities"
+    container_name: "facilities"
     command: npm start
     volumes:
       - ./app/facilities:/usr/app/facilities/
@@ -14,6 +20,23 @@ services:
       - mongo-fac
     depends_on:
       - mongo-fac
+    networks:
+      - app
+
+  facility-monitor:
+    build: "./app/facility-monitor"
+    command: npm start
+    volumes:
+      - ./app/facility-monitor:/usr/app/facility-monitor/
+      - node_modules_facility-monitor:/usr/app/facility-monitor/node_modules
+    ports:
+      - "14141:14141"
+    stdin_open: true
+    tty: true
+    depends_on:
+      - facilities
+    networks:
+      - app
 
   mongo-fac:
     container_name: mongo-fac
@@ -22,6 +45,8 @@ services:
       - ./data/db-mongo-fac:/data/db
     ports:
       - "13774:27017"
+    networks:
+      - app
 
   mongo-express-fac:
     container_name: mongo-express-fac
@@ -35,6 +60,23 @@ services:
       - mongo-fac
     depends_on:
       - mongo-fac
+    networks:
+      - app
+
+  rabbit1:
+    image: rabbitmq:3-management
+    container_name: 'rabbit1'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+    networks:
+      - app
+
 
 volumes:
   node_modules_fac:
+  node_modules_facility-monitor:
+  rabbit1:
