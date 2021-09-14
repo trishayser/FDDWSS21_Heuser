@@ -3,12 +3,27 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 var FacilitySchema = new Schema({
-    "facility_id": Number,
+    "facility_id": String,
     "name": String,
-    "station_id": Number,
-    "status": Number,
-    "foreign_id": Number,
-    "timestamp": String
+    "description": String,
+    "station_id": String,
+    "type": String,
+    "status_info": {
+        "status": Number,
+        "last_updated_user": String,
+        "last_updated_company": String,
+        "last_updated": String
+    },
+    "foreign_id": String,
+    "foreign_station_id": String,
+    "company": String,
+    "last_updated": String,
+    "created": String,
+    "geo": {
+        "coordinates": String,
+        "typ": String,
+        "name": String
+    }
 
 });
 
