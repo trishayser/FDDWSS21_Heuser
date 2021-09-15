@@ -1,16 +1,17 @@
 {
-  "name": "facility-monitor",
+  "name": "messages",
   "version": "1.0.0",
   "description": "",
-  "main": "facility-monitor.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node facility-monitor.js"
+    "start": "node app.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "amqplib": "^0.8.0",
-    "axios": "^0.21.4"
+    "body-parser": "^1.19.0",
+    "express": "^4.17.1",
+    "mongoose": "^6.0.5"
   }
 }

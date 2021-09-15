@@ -63,6 +63,49 @@ services:
     networks:
       - app
 
+  messages:
+    build: "./app/messages"
+    container_name: "messages"
+    command: npm start
+    volumes:
+      - ./app/messages:/usr/app/messages/
+      - node_modules_mes:/usr/app/messages/node_modules
+    ports:
+      - "14773:14773"
+    stdin_open: true
+    tty: true
+    links:
+      - mongo-mes
+    depends_on:
+      - mongo-mes
+    networks:
+      - app
+
+  mongo-mes:
+    container_name: mongo-mes
+    image: mongo:latest
+    volumes:
+      - ./data/db-mongo-mes:/data/db
+    ports:
+      - "14774:27017"
+    networks:
+      - app
+
+  mongo-express-mes:
+    container_name: mongo-express-mes
+    image: mongo-express
+    ports:
+      - "8082:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo-mes
+      ME_CONFIG_MONGODB_PORT: 27017
+    links:
+      - mongo-mes
+    depends_on:
+      - mongo-mes
+    networks:
+      - app
+
   rabbit1:
     image: rabbitmq:3-management
     container_name: 'rabbit1'
@@ -75,8 +118,21 @@ services:
     networks:
       - app
 
+  rabbit-status:
+    image: rabbitmq:3-management
+    container_name: 'rabbit-status'
+    ports:
+      - 5673:5672
+      - 15673:15672
+    volumes:
+      - ~/.docker-conf/rabbitmq-status/data/:/var/lib/rabbitmq-status/
+      - ~/.docker-conf/rabbitmq-status/log/:/var/log/rabbitmq-status
+    networks:
+      - app
 
 volumes:
   node_modules_fac:
+  node_modules_mes:
   node_modules_facility-monitor:
   rabbit1:
+  rabbit-status:

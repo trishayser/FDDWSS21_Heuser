@@ -1,5 +1,6 @@
 const axios = require('axios');
 const https = require('https');
+const amqp = require('amqplib/callback_api');
 
 
 var kvb_urls = {
@@ -115,7 +116,61 @@ function getKVBData() {
 }
 
 function getKVBDisorders() {
+    const httpsAgent = new https.Agent({ rejectUnauthorized: false });
 
+    const req_elevator_disorders = axios.get(kvb_urls.elevator_disorder, {httpsAgent});
+    const req_escalator_disorders = axios.get(kvb_urls.escalator_disorder, {httpsAgent});
+
+    axios.all([req_elevator_disorders, req_escalator_disorders]).then(axios.spread((...responses) => {
+        const res_elevator_disorders = responses[0];
+        const res_escalator_disorders = responses[1];
+
+        const elevators = res_elevator_disorders.data.features;
+        const escalators = res_escalator_disorders.data.features;
+
+        for (let i=0; i < elevators.length; i++) {
+            var el_id = "KVB-" + elevators[i].properties.Kennung;
+            var el_timestamp = elevators[i].properties.timestamp;
+            var el_status = 1;
+            sendDisorderMessage(el_id, el_timestamp, el_status);
+        }
+
+        for (let i=0; i < escalators.length; i++) {
+            var ev_id = "KVB-" + escalators[i].properties.Kennung;
+            var ev_timestamp = escalators[i].properties.timestamp;
+            var ev_status = 1;
+            sendDisorderMessage(ev_id, ev_timestamp, ev_status);
+        }
+
+    }));
+
+}
+
+function sendDisorderMessage(id, timestamp, status) {
+
+    amqp.connect('amqp://rabbit-status:5672', function(error0, connection) {
+        if (error0) {
+            throw error0;
+        }
+        connection.createChannel(function(error1, channel) {
+            if (error1) {
+                throw error1;
+            }
+
+            var queue = 'status';
+            var msg = id + ';' + timestamp + ';' + status;
+
+            channel.assertQueue(queue, {
+                durable: false
+            });
+            channel.sendToQueue(queue, Buffer.from(msg));
+
+            console.log(" [x] Sent %s", msg);
+        });
+        setTimeout(function() {
+            connection.close();
+        }, 500);
+    });
 }
 
 
@@ -209,11 +264,18 @@ function createOrUpdateStation(station) {
         }
     });
 }
-
+/*
 setInterval(() => {
     console.log("START GET DATA");
     getKVBData();
 }, 60000);
+
+setInterval(() => {
+    getKVBDisorders();
+}, 60000);
+*/
+//getKVBData();
+getKVBDisorders();
 
 //getKVBData();
 console.log("Monitor running");
