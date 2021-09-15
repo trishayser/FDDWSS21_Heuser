@@ -32,3 +32,6 @@ app.use(function (req, res) {
 app.listen(port);
 
 console.log('Facility REST API Server startet auf dem Port: ' + port);
+
+var statusMonotoring = require('./controllers/statusMonitor');
+statusMonotoring();
