@@ -2,6 +2,9 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require("body-parser");
 
+const cors = require('cors');
+
+
 var app = express();
 
 var port = process.env.PORT || 13773;
@@ -21,6 +24,12 @@ mongoose.connect("mongodb://mongo-fac:27017/facilities");
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
+var corsOptions = {
+    origin: '*',
+    optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+app.use(cors(corsOptions));
 
 var routes = require('./routes/routes');
 routes(app);
