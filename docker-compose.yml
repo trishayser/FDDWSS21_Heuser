@@ -119,6 +119,49 @@ services:
     networks:
       - app
 
+  users:
+    build: "./app/users"
+    container_name: "users"
+    command: npm start
+    volumes:
+      - ./app/users:/usr/app/users/
+      - node_modules_usr:/usr/app/users/node_modules
+    ports:
+      - "16773:16773"
+    stdin_open: true
+    tty: true
+    links:
+      - mongo-usr
+    depends_on:
+      - mongo-usr
+    networks:
+      - app
+
+  mongo-usr:
+    container_name: mongo-usr
+    image: mongo:latest
+    volumes:
+      - ./data/db-mongo-usr:/data/db
+    ports:
+      - "16774:27017"
+    networks:
+      - app
+
+  mongo-express-usr:
+    container_name: mongo-express-usr
+    image: mongo-express
+    ports:
+      - "8083:8081"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo-usr
+      ME_CONFIG_MONGODB_PORT: 27017
+    links:
+      - mongo-usr
+    depends_on:
+      - mongo-usr
+    networks:
+      - app
+
   rabbit1:
     image: rabbitmq:3-management
     container_name: 'rabbit1'
@@ -147,6 +190,7 @@ volumes:
   node_modules_fac:
   node_modules_mes:
   node_modules_webapp:
+  node_modules_usr:
   node_modules_facility-monitor:
   rabbit1:
   rabbit-status:

@@ -5,9 +5,9 @@ const cors = require('cors');
 
 var app = express();
 
-var port = process.env.PORT || 14773;
+var port = process.env.PORT || 16773;
 
-const Messages = require('./model');
+const User = require('./model');
 
 
 mongo_user = process.env.MONGO_USER;
@@ -15,7 +15,7 @@ mongo_pass = process.env.MONGO_PASS;
 mongoose.Promise = global.Promise;
 
 //mongoose.connect('mongodb+srv://user:fddw2021@cluster0.ghg6j.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
-mongoose.connect("mongodb://mongo-mes:27017/messages");
+mongoose.connect("mongodb://mongo-usr:27017/users");
 
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -27,7 +27,6 @@ var corsOptions = {
 }
 app.use(cors(corsOptions));
 
-
 var routes = require('./routing');
 routes(app);
 
@@ -37,4 +36,4 @@ app.use(function (req, res) {
 
 app.listen(port);
 
-console.log('Messaging REST API Server startet auf dem Port: ' + port);
+console.log('User REST API Server startet auf dem Port: ' + port);
