@@ -5,18 +5,18 @@ networks:
     driver: bridge
 
 services:
-  web:
-    build: "./app/webapp"
-    container_name: "webapp"
-    volumes:
-      - ./app/webapp:/usr/app/webapp/
-      - node_modules_webapp:/usr/app/webapp/node_modules
-    ports:
-      - "8080:8080"
-    stdin_open: true
-    tty: true
-    networks:
-      - app
+  #web:
+  #  build: "./app/webapp"
+  #  container_name: "webapp"
+  #  volumes:
+  #    - ./app/webapp:/usr/app/webapp/
+  #    - node_modules_webapp:/usr/app/webapp/node_modules
+  #  ports:
+  #    - "8080:8080"
+  #  stdin_open: true
+  #  tty: true
+  #  networks:
+  #    - app
 
   facilities:
     build: "./app/facilities"
