@@ -2,7 +2,7 @@ var amqp = require('amqplib/callback_api');
 const mongoose = require('mongoose'),
     Facility = mongoose.model("Facility");
 module.exports = function () {
-    amqp.connect('amqp://rabbit:5672', function(error0, connection) {
+    amqp.connect('amqp://rabbit1:5672', function(error0, connection) {
         if (error0) {
             throw error0;
         }
