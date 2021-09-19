@@ -17,30 +17,21 @@
 </template>
 
 <script>
+import {getMessagesFromUser} from "../services/message-service";
+
 export default {
   name: "Messages",
   data() {
     return {
-      messages: [
-        {
-          "_id": 1,
-          "user": "1",
-          "timestamp": "time",
-          "payload": "testtesttesttest"
-        },
-        {
-          "_id": 2,
-          "user": "1",
-          "timestamp": "time",
-          "payload": "testtesttesttest"
-        },
-        {
-          "_id": 3,
-          "user": "1",
-          "timestamp": "time",
-          "payload": "testtesttesttest"
-        }
-      ]
+      messages: []
+    }
+  },
+  mounted() {
+    const self = this;
+    if (this.$root.mockAccount.username) {
+      getMessagesFromUser(this.$root.mockAccount.username).then(function (messages) {
+        self.messages = messages;
+      });
     }
   }
 }
