@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const $axios = axios.create({
-    baseURL: 'http://localhost:16773',
+    baseURL: process.env.VUE_APP_USER_API,
 });
 
 // eslint-disable-next-line no-unused-vars

@@ -2,7 +2,7 @@ import axios from 'axios'
 import {getUser} from "./user-service";
 
 const $axios = axios.create({
-    baseURL: 'http://localhost:13773',
+    baseURL: process.env.VUE_APP_FACILITY_API,
 });
 
 function getAllFacilities() {

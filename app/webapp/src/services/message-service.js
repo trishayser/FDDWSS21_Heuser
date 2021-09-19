@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const $axios = axios.create({
-    baseURL: 'http://localhost:14773',
+    baseURL: process.env.VUE_APP_MESSAGE_API,
 });
 
 function getMessages(username) {
