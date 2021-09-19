@@ -17,7 +17,7 @@ services:
     tty: true
     networks:
       - app
-    restart: always
+
 
   facilities:
     build: "./app/facilities"
@@ -31,8 +31,8 @@ services:
     stdin_open: true
     tty: true
     environment:
-      WAIT_HOSTS: mongo-fac:27017
-    restart: always
+      WAIT_HOSTS: mongo-fac:27017, rabbit-status:5672
+
     links:
       - mongo-fac
     depends_on:
@@ -53,7 +53,7 @@ services:
     depends_on:
       - facilities
     environment:
-      WAIT_HOSTS: facilities:13773
+      WAIT_HOSTS: facilities:13773, rabbit1:5672, rabbit-status:5672
     networks:
       - app
 
@@ -68,12 +68,12 @@ services:
     stdin_open: true
     tty: true
     environment:
-      WAIT_HOSTS: messages:14773
+      WAIT_HOSTS: messages:14773, rabbit1:5672
     depends_on:
       - messages
     networks:
       - app
-    restart: always
+
 
   mongo-fac:
     container_name: mongo-fac
@@ -84,23 +84,8 @@ services:
       - "13774:27017"
     networks:
       - app
-    restart: always
 
-  mongo-express-fac:
-    container_name: mongo-express-fac
-    image: mongo-express
-    ports:
-      - "8081:8081"
-    environment:
-      ME_CONFIG_MONGODB_SERVER: mongo-fac
-      ME_CONFIG_MONGODB_PORT: 27017
-    links:
-      - mongo-fac
-    depends_on:
-      - mongo-fac
-    networks:
-      - app
-    restart: always
+
 
   messages:
     build: "./app/messages"
@@ -121,7 +106,7 @@ services:
       WAIT_HOSTS: mongo-mes:27017
     networks:
       - app
-    restart: always
+
 
   mongo-mes:
     container_name: mongo-mes
@@ -132,23 +117,8 @@ services:
       - "14774:27017"
     networks:
       - app
-    restart: always
 
-  mongo-express-mes:
-    container_name: mongo-express-mes
-    image: mongo-express
-    ports:
-      - "8082:8081"
-    environment:
-      ME_CONFIG_MONGODB_SERVER: mongo-mes
-      ME_CONFIG_MONGODB_PORT: 27017
-    links:
-      - mongo-mes
-    depends_on:
-      - mongo-mes
-    networks:
-      - app
-    restart: always
+
 
   users:
     build: "./app/users"
@@ -169,7 +139,7 @@ services:
       WAIT_HOSTS: mongo-usr:27017
     networks:
       - app
-    restart: always
+
 
   mongo-usr:
     container_name: mongo-usr
@@ -180,23 +150,8 @@ services:
       - "16774:27017"
     networks:
       - app
-    restart: always
 
-  mongo-express-usr:
-    container_name: mongo-express-usr
-    image: mongo-express
-    ports:
-      - "8083:8081"
-    environment:
-      ME_CONFIG_MONGODB_SERVER: mongo-usr
-      ME_CONFIG_MONGODB_PORT: 27017
-    links:
-      - mongo-usr
-    depends_on:
-      - mongo-usr
-    networks:
-      - app
-    restart: always
+
 
   rabbit1:
     image: rabbitmq:3-management
@@ -209,7 +164,7 @@ services:
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
       - app
-    restart: always
+
 
   rabbit-status:
     image: rabbitmq:3-management
@@ -222,7 +177,7 @@ services:
       - ~/.docker-conf/rabbitmq-status/log/:/var/log/rabbitmq-status
     networks:
       - app
-    restart: always
+
 
 volumes:
   node_modules_fac:

@@ -28,17 +28,18 @@ export default {
   },
   methods: {
     login() {
-      if(this.input.username != "" && this.input.password != "") {
+      if(this.input.username != "") {
         validateUser(this.input.username).then(function (isValidated) {
           if (isValidated) {
-            console.log("validated");
-            this.$root.mockAccount.username = this.input.username;
+            console.log(this.$root.mockAccount.username);
+            this.$root.userLogin(this.input.username);
             this.$emit("authenticated", true);
             this.$router.replace({name: "Home"})
           }
         });
       } else console.log("please apssword");
-    }
+    },
+
   }
 }
 </script>

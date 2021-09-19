@@ -16,6 +16,9 @@
             <li class="nav-item">
               <router-link class="nav-link active" to="/login">Login</router-link>
             </li>
+            <li>
+              Logged in as {{this.$root.mockAccount.username}}
+            </li>
           </ul>
         </div>
       </div>
