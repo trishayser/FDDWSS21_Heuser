@@ -173,7 +173,7 @@ function getKVBDisorders() {
 
 function sendDisorderMessage(id, timestamp, status) {
 
-    amqp.connect('amqp://rabbit-status:5672', function(error0, connection) {
+    amqp.connect('amqp://rabbit:5672', function(error0, connection) {
         if (error0) {
             throw error0;
         }
