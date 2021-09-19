@@ -1,13 +1,18 @@
 # FDDWSS21_Heuser
 Das Projekt ist für FDDW im Studiengang Medieninformatik der TH Köln von Tristan Heuser. Es wurde alleine ohne weitere Studenten umgesetzt.
 
-Deployed (Derzeit offline): http://167.172.162.34:8080 (Web-Anwendung)
+Deployed (Derzeit offline): http://157.230.118.73:8080 (Web-Anwendung)
+
+Der Server läuft leider momentan nicht, da RabbitMQ (über Docker) auf dem Server Probleme macht und der wichtigste Microservice ohne RabbitMQ nicht lauffähig ist. Hoffe ich schaff es noch serverseitig zu fixen.
+Lokal sollte die Andwendung laufen.
 
 ## Projekt
 In dieser Webanwendung ist es möglich einzelne Aufzüge oder Rolltreppen zu abonnieren und daraufhin Nachrichten zu bekommen. 
 
 ## Setup
+First edit the .env.template file in the webapp directory. If you running the app with docker compose you just have to rename it to .env
 
+If you want to tun it on a server, you have to change it to your ip + port
 
 ```shell
 docker-compose up -d
@@ -34,6 +39,9 @@ npm start
 ```
 
 ### VueJS
+First edit the .env.template file in the webapp directory. If you running the app with docker compose you just have to rename it to .env
+
+If you want to tun it on a server, you have to change it to your ip + port
 #### Project setup
 ```
 npm install
