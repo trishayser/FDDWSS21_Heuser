@@ -25,19 +25,34 @@ function getKVBData() {
     const req_escalator = axios.get(kvb_urls.escalator, {httpsAgent});
     const req_station = axios.get(kvb_urls.station, {httpsAgent});
     const req_station_areas = axios.get(kvb_urls.station_areas, {httpsAgent});
+    const req_elevator_disorder = axios.get(kvb_urls.elevator_disorder, {httpsAgent});
+    const req_escalator_disorder = axios.get(kvb_urls.escalator_disorder, {httpsAgent});
 
-    axios.all([req_elevator, req_escalator, req_station, req_station_areas]).then(axios.spread((...responses) => {
+    axios.all([req_elevator, req_escalator, req_station, req_station_areas, req_elevator_disorder, req_escalator_disorder]).then(axios.spread((...responses) => {
         console.log("start");
 
         const res_elevator = responses[0];
         const res_escalator = responses[1];
         const res_station = responses[2];
         const res_station_areas = responses[3];
+        const res_elevator_disorder = responses[4];
+        const res_escalator_disorder = responses[5];
 
         const elevators = res_elevator.data.features;
         const escalators = res_escalator.data.features;
         const stations = res_station.data.features;
         const station_areas = res_station_areas.data.features;
+        const elevator_disorder = res_elevator_disorder.data.features;
+        const escalator_disorder = res_escalator_disorder.data.features;
+
+        var disorders = [];
+        for (let l=0; i<elevator_disorder.length; l++) {
+            disorders.push("KVB-" + elevator_disorder[l].properties.Kennung)
+        }
+        for (let k=0; i<escalator_disorder.length; k++) {
+            disorders.push("KVB-" + escalator_disorder[k].properties.Kennung)
+        }
+
 
         console.log("stations loaded");
         for (var i=0; i<station_areas.length; i++) {
@@ -56,7 +71,13 @@ function getKVBData() {
         }
 
         for (var j=0; j<elevators.length; j++) {
+            var status = 0;
             console.log("FAC EL: " + "KVB-" + elevators[j].properties.Kennung + " object create");
+            if (disorders.includes("KVB-" + elevators[j].properties.Kennung)) {
+                status = 1;
+            } else {
+                status = 2;
+            }
             try {
                 var elevator = {
                     "facility_id": "KVB-" + elevators[j].properties.Kennung,
@@ -72,6 +93,10 @@ function getKVBData() {
                         "coordinates": elevators[j].geometry.coordinates[0].toString() + ", " + elevators[j].geometry.coordinates[1].toString(),
                         "typ": elevators[j].geometry.type,
                         "name": elevators[j].geometry_name
+                    },
+                    "status_info": {
+                        "status": status,
+                        "last_updated": Date.now()
                     }
                 }
             } catch (e) {
@@ -264,18 +289,18 @@ function createOrUpdateStation(station) {
         }
     });
 }
-/*
+
+
 setInterval(() => {
     console.log("START GET DATA");
     getKVBData();
-}, 60000);
+}, 1200000);
 
 setInterval(() => {
     getKVBDisorders();
 }, 60000);
-*/
-//getKVBData();
-getKVBDisorders();
+
+getKVBData();
 
 //getKVBData();
 console.log("Monitor running");
