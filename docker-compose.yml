@@ -31,7 +31,7 @@ services:
     stdin_open: true
     tty: true
     environment:
-      WAIT_HOSTS: mongo-fac:27017, rabbit-status:5672
+      WAIT_HOSTS: mongo-fac:27017, rabbit:5672
 
     links:
       - mongo-fac
@@ -53,7 +53,7 @@ services:
     depends_on:
       - facilities
     environment:
-      WAIT_HOSTS: facilities:13773, rabbit1:5672, rabbit-status:5672
+      WAIT_HOSTS: facilities:13773, rabbit:5672
     networks:
       - app
 
@@ -68,7 +68,7 @@ services:
     stdin_open: true
     tty: true
     environment:
-      WAIT_HOSTS: messages:14773, rabbit1:5672
+      WAIT_HOSTS: messages:14773, rabbit:5672
     depends_on:
       - messages
     networks:
@@ -153,9 +153,9 @@ services:
 
 
 
-  rabbit1:
+  rabbit:
     image: rabbitmq:3-management
-    container_name: 'rabbit1'
+    container_name: 'rabbit'
     ports:
       - 5672:5672
       - 15672:15672
@@ -166,18 +166,6 @@ services:
       - app
 
 
-  rabbit-status:
-    image: rabbitmq:3-management
-    container_name: 'rabbit-status'
-    ports:
-      - 5673:5672
-      - 15673:15672
-    volumes:
-      - ~/.docker-conf/rabbitmq-status/data/:/var/lib/rabbitmq-status/
-      - ~/.docker-conf/rabbitmq-status/log/:/var/log/rabbitmq-status
-    networks:
-      - app
-
 
 volumes:
   node_modules_fac:
@@ -186,5 +174,4 @@ volumes:
   node_modules_usr:
   node_modules_facility-monitor:
   node_modules_message-monitor:
-  rabbit1:
-  rabbit-status:
+  rabbit:

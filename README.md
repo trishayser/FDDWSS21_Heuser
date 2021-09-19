@@ -85,9 +85,9 @@ Das Projekt wurde hauptsächlich mit NodeJS (JavaScript), VueJS und RabbitMQ umg
 
 speichert Daten zu den einzelnen Stationen (```stations```) und Aufzüge / Rolltreppen (```facilities```) in einer MongoDB (```mongo-fac```)
 
-sendet Benachrichtigungen an eine RabbitMQ Queue (```rabbit1```) 
+sendet Benachrichtigungen an eine RabbitMQ Queue (```rabbit```) 
 
-überprüft Status Updates der (```facilities```) bzw. Nachrichten der (```rabbit-status```) Queue und ändert diese Daten in der MongoDB (```mongo-fac```)
+überprüft Status Updates der (```facilities```) bzw. Nachrichten der (```rabbit```) Queue und ändert diese Daten in der MongoDB (```mongo-fac```)
 
 ##### Datenmodelle
 
@@ -182,7 +182,7 @@ speichert Daten zu den Benutzern (```messages```) in einer MongoDB (```mongo-mes
 #### Facility Monitor
 überprüft in regelmäßigen Zeitabständen nach Updates zu den Störungen der einzelnen Facilities und zu Updates zu den einzelnen Stationen
 
-Bei einem Statusupdate wird eine Nachricht an ```rabbit-status``` gesendet
+Bei einem Statusupdate wird eine Nachricht an ```rabbit``` gesendet
 
 #### Message Monitor
-Wartet auf Nachrichten der ```rabbit1``` Queue und sendet diese weiter an ```messages```
+Wartet auf Nachrichten der ```rabbit``` Queue und sendet diese weiter an ```messages```
