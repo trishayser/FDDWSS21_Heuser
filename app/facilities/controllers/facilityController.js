@@ -5,7 +5,6 @@ const mongoose = require('mongoose'),
 const amqp = require("amqplib/callback_api");
 
 
-
 exports.list_facilites = function(req, res) {
     Facility.find({}, function (err, facility) {
         if (err)
@@ -34,11 +33,22 @@ exports.read_facility = function(req, res) {
 
 
 exports.update_facility = function(req, res) {
-    Facility.findOneAndUpdate({facility_id: req.params.facility_id}, req.body, {new: true}, function(err, facility) {
+    Facility.find({facility_id: req.params.facility_id}, function(err, old_facility) {
         if (err)
             res.send(err);
-        res.json(facility);
-        //sendMessage(req.params.facility_id)
+        Facility.findOneAndUpdate({facility_id: req.params.facility_id}, req.body, {new: true}, function(err, facility) {
+            if (err)
+                res.send(err);
+            res.json(facility);
+            if ("status_info" in facility && "status_info" in old_facility[0]) {
+                console.log("YES!!!!");
+                if (old_facility[0].status_info.status != facility.status_info.status) {
+                    console.log("UPDATE!!!!");
+                    sendMessage(req.params.facility_id, facility.status_info.status);
+                }
+            }
+
+        });
     });
 
 };
@@ -60,7 +70,8 @@ exports.reset = function (req, res) {
     Facility.deleteMany({});
 };
 
-function sendMessage(facility_id) {
+function sendMessage(facility_id, status) {
+    console.log("sendMessage()");
     try {
         amqp.connect('amqp://guest:guest@rabbit1:5672', function(error0, connection) {
             if (error0) {
@@ -70,15 +81,29 @@ function sendMessage(facility_id) {
                 if (error1) {
                     throw error1;
                 }
-                var exchange = 'facilities';
-                var msg = facility_id + ' updated';
-                var severity = facility_id;
+                var queue = 'messages';
+                var text = "";
+                if (status == 0) {
+                    text = "Facility " + facility_id + ": Status is now unknown";
+                } else if (status == 1) {
+                    text = "Facility " + facility_id + ": is now defect";
+                } else if (status == 2) {
+                    text = "Facility " + facility_id + ": is now working";
+                }
 
-                channel.assertExchange(exchange, 'direct', {
+                var data = {
+                    "facility_id": facility_id,
+                    "text": text
+                }
+
+                var msg = JSON.stringify(data);
+
+                channel.assertQueue(queue, {
                     durable: false
                 });
-                channel.publish(exchange, severity, Buffer.from(msg));
-                console.log(" [x] Sent %s: '%s'", severity, msg);
+
+                channel.sendToQueue(queue, Buffer.from(msg));
+                console.log(" [x] Sent %s", msg);
             });
         });
     }catch (e) {

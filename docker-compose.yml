@@ -51,6 +51,21 @@ services:
     networks:
       - app
 
+  message-monitor:
+    build: "./app/message-monitor"
+    command: npm start
+    volumes:
+      - ./app/message-monitor:/usr/app/message-monitor/
+      - node_modules_message-monitor:/usr/app/message-monitor/node_modules
+    ports:
+      - "15151:15151"
+    stdin_open: true
+    tty: true
+    depends_on:
+      - messages
+    networks:
+      - app
+
   mongo-fac:
     container_name: mongo-fac
     image: mongo:latest
@@ -192,5 +207,6 @@ volumes:
   node_modules_webapp:
   node_modules_usr:
   node_modules_facility-monitor:
+  node_modules_message-monitor:
   rabbit1:
   rabbit-status:
