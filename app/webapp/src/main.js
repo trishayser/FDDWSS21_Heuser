@@ -26,6 +26,9 @@ new Vue({
     },
     logout() {
       this.authenticated = false;
+    },
+    userLogin(user) {
+      this.mockAccount = user;
     }
   },
   render: h => h(App),

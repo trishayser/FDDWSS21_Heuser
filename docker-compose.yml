@@ -5,18 +5,19 @@ networks:
     driver: bridge
 
 services:
-  #web:
-  #  build: "./app/webapp"
-  #  container_name: "webapp"
-  #  volumes:
-  #    - ./app/webapp:/usr/app/webapp/
-  #    - node_modules_webapp:/usr/app/webapp/node_modules
-  #  ports:
-  #    - "8080:8080"
-  #  stdin_open: true
-  #  tty: true
-  #  networks:
-  #    - app
+  web:
+    build: "./app/webapp"
+    container_name: "webapp"
+    volumes:
+      - ./app/webapp:/usr/app/webapp/
+      - node_modules_webapp:/usr/app/webapp/node_modules
+    ports:
+      - "8080:8080"
+    stdin_open: true
+    tty: true
+    networks:
+      - app
+
 
   facilities:
     build: "./app/facilities"
@@ -29,6 +30,9 @@ services:
       - "13773:13773"
     stdin_open: true
     tty: true
+    environment:
+      WAIT_HOSTS: mongo-fac:27017, rabbit-status:5672
+
     links:
       - mongo-fac
     depends_on:
@@ -48,6 +52,8 @@ services:
     tty: true
     depends_on:
       - facilities
+    environment:
+      WAIT_HOSTS: facilities:13773, rabbit1:5672, rabbit-status:5672
     networks:
       - app
 
@@ -61,10 +67,13 @@ services:
       - "15151:15151"
     stdin_open: true
     tty: true
+    environment:
+      WAIT_HOSTS: messages:14773, rabbit1:5672
     depends_on:
       - messages
     networks:
       - app
+
 
   mongo-fac:
     container_name: mongo-fac
@@ -76,20 +85,7 @@ services:
     networks:
       - app
 
-  mongo-express-fac:
-    container_name: mongo-express-fac
-    image: mongo-express
-    ports:
-      - "8081:8081"
-    environment:
-      ME_CONFIG_MONGODB_SERVER: mongo-fac
-      ME_CONFIG_MONGODB_PORT: 27017
-    links:
-      - mongo-fac
-    depends_on:
-      - mongo-fac
-    networks:
-      - app
+
 
   messages:
     build: "./app/messages"
@@ -106,8 +102,11 @@ services:
       - mongo-mes
     depends_on:
       - mongo-mes
+    environment:
+      WAIT_HOSTS: mongo-mes:27017
     networks:
       - app
+
 
   mongo-mes:
     container_name: mongo-mes
@@ -119,20 +118,7 @@ services:
     networks:
       - app
 
-  mongo-express-mes:
-    container_name: mongo-express-mes
-    image: mongo-express
-    ports:
-      - "8082:8081"
-    environment:
-      ME_CONFIG_MONGODB_SERVER: mongo-mes
-      ME_CONFIG_MONGODB_PORT: 27017
-    links:
-      - mongo-mes
-    depends_on:
-      - mongo-mes
-    networks:
-      - app
+
 
   users:
     build: "./app/users"
@@ -149,8 +135,11 @@ services:
       - mongo-usr
     depends_on:
       - mongo-usr
+    environment:
+      WAIT_HOSTS: mongo-usr:27017
     networks:
       - app
+
 
   mongo-usr:
     container_name: mongo-usr
@@ -162,20 +151,7 @@ services:
     networks:
       - app
 
-  mongo-express-usr:
-    container_name: mongo-express-usr
-    image: mongo-express
-    ports:
-      - "8083:8081"
-    environment:
-      ME_CONFIG_MONGODB_SERVER: mongo-usr
-      ME_CONFIG_MONGODB_PORT: 27017
-    links:
-      - mongo-usr
-    depends_on:
-      - mongo-usr
-    networks:
-      - app
+
 
   rabbit1:
     image: rabbitmq:3-management
@@ -189,6 +165,7 @@ services:
     networks:
       - app
 
+
   rabbit-status:
     image: rabbitmq:3-management
     container_name: 'rabbit-status'
@@ -200,6 +177,7 @@ services:
       - ~/.docker-conf/rabbitmq-status/log/:/var/log/rabbitmq-status
     networks:
       - app
+
 
 volumes:
   node_modules_fac:

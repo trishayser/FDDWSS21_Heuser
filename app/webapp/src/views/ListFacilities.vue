@@ -9,6 +9,7 @@
         </div>
       </div>
     </div>
+    <saved v-if="saved"></saved>
     <div class="py-5">
       <div class="container">
         <div class="row">
@@ -26,14 +27,16 @@
 <script>
 import {getFacilities, getFacilitiesWithSubs} from '../services/facility-service';
 import {updateSubs} from "../services/user-service";
+import Saved from "../components/Saved";
 
 export default {
   name: "ListFacilities",
-
+  components: {Saved},
   data() {
     return {
       facilities: [],
-      subscribed: []
+      subscribed: [],
+      saved: false
     }
   },
   mounted() {
@@ -63,6 +66,8 @@ export default {
           console.log(subscriped_facs[j].facility_id);
       }
       console.log(subscriped);
+
+      this.saved = true;
 
 
       updateSubs(this.$root.mockAccount.username, subscriped);
