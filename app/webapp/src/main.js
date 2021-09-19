@@ -11,5 +11,22 @@ Vue.use(BootstrapVue)
 
 new Vue({
   router,
+  data() {
+    return {
+      authenticated: true,
+      mockAccount: {
+        username: "test",
+        password: ""
+      }
+    }
+  },
+  methods: {
+    setAuthenticated(status) {
+      this.authenticated = status;
+    },
+    logout() {
+      this.authenticated = false;
+    }
+  },
   render: h => h(App),
 }).$mount('#app')
