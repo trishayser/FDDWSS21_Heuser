@@ -5,18 +5,19 @@ networks:
     driver: bridge
 
 services:
-  #web:
-  #  build: "./app/webapp"
-  #  container_name: "webapp"
-  #  volumes:
-  #    - ./app/webapp:/usr/app/webapp/
-  #    - node_modules_webapp:/usr/app/webapp/node_modules
-  #  ports:
-  #    - "8080:8080"
-  #  stdin_open: true
-  #  tty: true
-  #  networks:
-  #    - app
+  web:
+    build: "./app/webapp"
+    container_name: "webapp"
+    volumes:
+      - ./app/webapp:/usr/app/webapp/
+      - node_modules_webapp:/usr/app/webapp/node_modules
+    ports:
+      - "8080:8080"
+    stdin_open: true
+    tty: true
+    networks:
+      - app
+    restart: always
 
   facilities:
     build: "./app/facilities"
@@ -29,6 +30,9 @@ services:
       - "13773:13773"
     stdin_open: true
     tty: true
+    environment:
+      WAIT_HOSTS: mongo-fac:27017
+    restart: always
     links:
       - mongo-fac
     depends_on:
@@ -48,6 +52,8 @@ services:
     tty: true
     depends_on:
       - facilities
+    environment:
+      WAIT_HOSTS: facilities:13773
     networks:
       - app
 
@@ -61,10 +67,13 @@ services:
       - "15151:15151"
     stdin_open: true
     tty: true
+    environment:
+      WAIT_HOSTS: messages:14773
     depends_on:
       - messages
     networks:
       - app
+    restart: always
 
   mongo-fac:
     container_name: mongo-fac
@@ -75,6 +84,7 @@ services:
       - "13774:27017"
     networks:
       - app
+    restart: always
 
   mongo-express-fac:
     container_name: mongo-express-fac
@@ -90,6 +100,7 @@ services:
       - mongo-fac
     networks:
       - app
+    restart: always
 
   messages:
     build: "./app/messages"
@@ -106,8 +117,11 @@ services:
       - mongo-mes
     depends_on:
       - mongo-mes
+    environment:
+      WAIT_HOSTS: mongo-mes:27017
     networks:
       - app
+    restart: always
 
   mongo-mes:
     container_name: mongo-mes
@@ -118,6 +132,7 @@ services:
       - "14774:27017"
     networks:
       - app
+    restart: always
 
   mongo-express-mes:
     container_name: mongo-express-mes
@@ -133,6 +148,7 @@ services:
       - mongo-mes
     networks:
       - app
+    restart: always
 
   users:
     build: "./app/users"
@@ -149,8 +165,11 @@ services:
       - mongo-usr
     depends_on:
       - mongo-usr
+    environment:
+      WAIT_HOSTS: mongo-usr:27017
     networks:
       - app
+    restart: always
 
   mongo-usr:
     container_name: mongo-usr
@@ -161,6 +180,7 @@ services:
       - "16774:27017"
     networks:
       - app
+    restart: always
 
   mongo-express-usr:
     container_name: mongo-express-usr
@@ -176,6 +196,7 @@ services:
       - mongo-usr
     networks:
       - app
+    restart: always
 
   rabbit1:
     image: rabbitmq:3-management
@@ -188,6 +209,7 @@ services:
       - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
     networks:
       - app
+    restart: always
 
   rabbit-status:
     image: rabbitmq:3-management
@@ -200,6 +222,7 @@ services:
       - ~/.docker-conf/rabbitmq-status/log/:/var/log/rabbitmq-status
     networks:
       - app
+    restart: always
 
 volumes:
   node_modules_fac:
